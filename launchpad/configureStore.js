@@ -12,7 +12,11 @@ export default (history, initialState) => {
   const middleware = compact([thunk, router(history), clientDev && logger])
   const createStoreWithMiddleware = applyMiddleware(...middleware)(createStore)
 
-  const store = createStoreWithMiddleware(reducer, initialState)
+  const store = createStoreWithMiddleware(...compact([
+    reducer, 
+    initialState, 
+    clientDev && window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+  ]))
 
   if (clientDev && module.hot) {
     module.hot.accept('./store', () => {
