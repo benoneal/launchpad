@@ -7,8 +7,13 @@ import createHistory from 'history/createBrowserHistory'
 import configureStore from './configureStore'
 import {setCache} from './cache'
 
-setCache(window.FETCH_CACHE)
-const store = configureStore(createHistory(), window.INITIAL_STATE)
+const isClient = typeof window !== 'undefined'
+const rehydrate = (key) => (
+  isClient ? window[key] : {}
+)
+
+isClient && setCache(rehydrate('FETCH_CACHE'))
+const store = isClient && configureStore(createHistory(), rehydrate('INITIAL_STATE'))
 
 export default (AppComponent) => {
   render(

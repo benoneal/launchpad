@@ -24,8 +24,7 @@
     "url": "https://github.com/benoneal/launchpad/issues"
   },
   "scripts": {
-    "dev": "npm run build:dev && concurrently --kill-others \"npm run watch:dev\" \"npm run serve:dev\"",
-    "serve:dev": "node dist/server.js",
+    "dev": "npm run build:dev && concurrently --kill-others \"npm run watch:dev\" \"npm run start\"",
     "watch:dev": "cross-env NODE_ENV=development webpack --watch",
     "build:dev": "cross-env NODE_ENV=development webpack --progress",
     "start": "node dist/server",
