@@ -48,7 +48,11 @@ const expiringCache = curry((minutes, fn, keyGen = defaultStringify) => (...args
 const cacheDuration = typeof document === 'undefined' ? SERVER_CACHE_TIME : CLIENT_CACHE_TIME
 export const fetchCache = expiringCache(cacheDuration)
 
-export const getCache = () => apiCache
+export const getCache = () => {
+  const cache = apiCache
+  apiCache = {}
+  return cache
+}
 export const setCache = (newCache) => {
   if (newCache) apiCache = newCache
 }

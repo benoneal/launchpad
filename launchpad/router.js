@@ -11,7 +11,7 @@ const redirect = {}
 const routes = {}
 
 const trimTrailingSlash = (path) => {
-  if (path !== '/' && path.slice(-1) == '/') return path.slice(0, -1)
+  if (path !== '/' && path.slice(-1) === '/') return path.slice(0, -1)
   return path
 }
 

@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "description": "Universal react/redux starter kit",
   "main": "index.js",
-  "private": true,
+  "private": false,
   "repository": {
     "type": "git",
     "url": "https://github.com/benoneal/launchpad.git"
@@ -24,19 +24,25 @@
     "url": "https://github.com/benoneal/launchpad/issues"
   },
   "scripts": {
-    "start": "node index",
-    "start-prod": "cross-env NODE_ENV=production PORT=5000 node index",
-    "build": "cross-env NODE_ENV=production webpack -p --config ./webpack.production.config.js --progress --json | webpack-bundle-size-analyzer"
+    "dev": "npm run build:dev && concurrently --kill-others \"npm run watch:dev\" \"npm run serve:dev\"",
+    "serve:dev": "node dist/server.js",
+    "watch:dev": "cross-env NODE_ENV=development webpack --watch",
+    "build:dev": "cross-env NODE_ENV=development webpack --progress",
+    "start": "node dist/server",
+    "build:prod": "cross-env NODE_ENV=production webpack -p --progress --json | webpack-bundle-size-analyzer"
   },
   "dependencies": {
     "axios": "^0.16.1",
     "babel-core": "^6.24.1",
+    "babel-plugin-transform-react-jsx-self": "^6.22.0",
+    "babel-plugin-transform-react-jsx-source": "^6.22.0",
     "babel-preset-env": "^1.4.0",
-    "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
+    "babili-webpack-plugin": "^0.0.11",
     "body-parser": "^1.17.1",
     "compression": "^1.6.2",
+    "concurrently": "^3.4.0",
     "cookie-parser": "^1.4.3",
     "cross-env": "^4.0.0",
     "electrode-csrf-jwt": "^1.2.1",
@@ -44,33 +50,31 @@
     "favicons-webpack-plugin": "^0.0.7",
     "file-loader": "^0.11.1",
     "history": "^4.6.1",
+    "nodemon": "^1.11.0",
     "qs": "^6.4.0",
     "raw-loader": "^0.5.1",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
     "react-helmet": "^5.0.3",
+    "react-hot-loader": "^3.0.0-beta.6",
     "react-redux": "^5.0.4",
     "react-router": "^4.1.1",
     "redux": "^3.6.0",
     "redux-logger": "^3.0.1",
     "redux-thunk": "^2.2.0",
     "route-parser": "^0.0.5",
+    "source-map-support": "^0.4.14",
     "uuid": "^3.0.1",
     "webpack": "^2.4.1",
     "webpack-bundle-size-analyzer": "^2.6.0",
     "webpack-dev-middleware": "^1.10.1",
-    "webpack-hot-middleware": "^2.18.0"
+    "webpack-hot-middleware": "^2.18.0",
+    "webpack-node-externals": "^1.5.4"
   },
   "devDependencies": {
     "babel-loader": "^6.2.10",
     "babel-plugin-react-transform": "^2.0.2",
-    "babel-plugin-transform-object-assign": "^6.22.0",
     "del": "^2.2.2",
-    "eslint": "^3.15.0",
-    "eslint-config-airbnb": "^14.0.0",
-    "eslint-plugin-import": "^2.2.0",
-    "eslint-plugin-jsx-a11y": "^3.0.2",
-    "eslint-plugin-react": "^6.9.0",
     "react-transform-hmr": "^1.0.4"
   }
 }

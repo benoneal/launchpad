@@ -7,9 +7,9 @@ run.config:
 
 deploy.config:
   extra_steps:
-    - npm run build
+    - npm run build:prod
 
 web.main:
   start:
     nginx: nginx -c /app/nginx.conf
-    app: npm run start-prod
+    app: npm run start

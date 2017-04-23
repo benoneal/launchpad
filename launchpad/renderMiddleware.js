@@ -10,7 +10,7 @@ import {getCache, fetchData, cacheData} from './cache'
 
 const renderCache = {}
 
-const renderHtml = (AppComponent, store) => {
+const renderHtml = ({AppComponent, store, bundle, baseCss, cssToString}) => {
   const body = renderToStaticMarkup(
     <Provider store={store}>
       <AppComponent />
@@ -21,31 +21,36 @@ const renderHtml = (AppComponent, store) => {
     <Root 
       head={Helmet.renderStatic()}
       content={body}
+      baseStyles={baseCss}
+      renderJSStyles={cssToString}
       fetchCache={getCache()}
       initialState={store.getState()}
+      bundle={bundle}
     />
   )
 
   return `<!doctype html>\n${rootMarkup}`
 }
 
-const resolveRoute = (AppComponent, path, res, store) => {
-  const cachedHtml = fetchData(renderCache, path)
-  if (cachedHtml) return res.status(200).send(cachedHtml)
-  resolveLocation(path, store.dispatch)
+const resolveRoute = ({path, res, cachePerUrl = true, ...config}) => {
+  if (cachePerUrl) {
+    const cachedHtml = fetchData(renderCache, path)
+    if (cachedHtml) return res.status(200).send(cachedHtml)
+  }
+  resolveLocation(path, config.store.dispatch)
     .then(({status, url}) => {
       if (url) {
         return res.redirect(status, url)
       }
-      const html = renderHtml(AppComponent, store)
-      cacheData(renderCache, 8 * 60, path, html, typeof html)
+      const html = renderHtml(config)
+      cachePerUrl && cacheData(renderCache, 8 * 60, path, html, typeof html)
       res.status(status).send(html)
     })
 }
 
-export default (AppComponent) => (req, res) => {
+export default (config) => (req, res) => {
   const history = createHistory({
     initialEntries: [req.url]
   })
-  resolveRoute(AppComponent, req.url, res, configureStore(history))
+  resolveRoute({...config, path: req.url, res, store: configureStore(history)})
 }

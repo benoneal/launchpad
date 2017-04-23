@@ -6,7 +6,7 @@ import logger from 'redux-logger'
 import router from './router'
 import reducer from './store'
 
-const clientDev = typeof document !== 'undefined' && process.NODE_ENV !== 'production'
+const clientDev = typeof document !== 'undefined' && process.env.NODE_ENV !== 'production'
 
 export default (history, initialState) => {
   const middleware = compact([thunk, router(history), clientDev && logger])
@@ -14,7 +14,7 @@ export default (history, initialState) => {
 
   const store = createStoreWithMiddleware(reducer, initialState)
 
-  if (module.hot) {
+  if (clientDev && module.hot) {
     module.hot.accept('./store', () => {
       const nextRootReducer = require('./store').default
       store.replaceReducer(nextRootReducer)

@@ -7,8 +7,8 @@ const Key = ({
   reply
 }) => (
   <div>
-    <Helmet title="Key" />
-    <h3>{reply}</h3>
+    <Helmet title={`Key ${reply.split(': ')[1]}`} />
+    <h2>{reply}</h2>
     <img src={imgSrc} height={500}/>
   </div>
 )

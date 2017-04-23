@@ -46,12 +46,26 @@ const createEndpoint = (method) => (endpoint, promise) => {
 export const getEndpoint = createEndpoint('get')
 export const postEndpoint = createEndpoint('post')
 
-export default (AppComponent, port, config) => {
+// options: {
+//   AppComponent,
+//   port,
+//   config, 
+//   baseCss, 
+//   cssToString,
+//   cachePerUrl
+// }
+export default ({AppComponent, port, config, ...options}) => {
   port = port || process.env.PORT || 3000
 
   if (process.env.NODE_ENV !== 'production') {
     if (!config) throw new Error('Dev config not supplied for development server')
-    const compiler = webpack(config)
+    const compiler = webpack({
+      ...config,
+      output: {
+        ...config.output,
+        path: path.resolve(__dirname, `../${config.output.path}`) // this is hot bullshit
+      }
+    })
 
     server.use(dev(compiler, {
       publicPath: config.output.publicPath,
@@ -69,7 +83,7 @@ export default (AppComponent, port, config) => {
 
   server.use(express.static(config.output.path))
 
-  server.get('*', renderMiddleware(AppComponent))
+  server.get('*', renderMiddleware({AppComponent, bundle: config.output.filename, ...options}))
 
   server.listen(port, (err) => {
     if (err) {

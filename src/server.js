@@ -1,10 +1,10 @@
 import launchServer, {getEndpoint} from '../launchpad/server'
-import App from './App'
+import AppComponent from './App'
 
-getEndpoint('/test/:key', ({key}) => (
+getEndpoint('/api/key/:key', ({key}) => (
   Promise.resolve({reply: `Your key was: ${key}`})
 ))
 
 export default (port, config) => {
-  launchServer(App, port, config)
+  launchServer({AppComponent, port, config})
 }
