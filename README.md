@@ -78,7 +78,7 @@ Setting up your app routes is trivial:
 ``` javascript
 // routes.js
 import {routeFragment, routeRedirect} from '../launchpad'
-import {getUsers, getUser} from './actions
+import {getUsers, getUser} from './actions'
 
 // redirect from /user or /user/ to the app root (trailing slashes are normalised)
 routeRedirect('/user', '/') 
