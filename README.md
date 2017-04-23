@@ -1,11 +1,24 @@
 # Launchpad
 
-A starter kit for modern universal apps that is simple and works. 
+A production-ready starter kit for modern universal apps developed to solve the problems of an actual production application. 
 
-- Routing (with universal status codes, data fetching, misses, and redirects)
-- Redux as the single source of all app state (including routes)
-- Powerful action abstracti on: async, side-effects, partial initialstate, conditionals
-- CSS in JS ready (lib agnostic)
-- Cached html per url 
-- `BelowTheFold` component to optimise server-rendering
-- Favicons
+- Server-side rendering
+- React view
+- Custom redux-based router
+- Express server
+- CSS-in-JS hooks (library agnostic)
+- Client and server caching of data and rendered html
+- Both client and server are Webpack 2 bundled
+- Full ES2017 support throughout project
+- Hot reloading in development
+- Images, including opt-in inlined SVGs
+- Favicon generation
+- Full control of rendered html through `react-helmet`
+- CSRF security on all internal api requests
+- BelowTheFold component for ssr optimization
+
+Things has no opinion/implementation for: 
+
+- Linting
+- Standard CSS
+- Testing
