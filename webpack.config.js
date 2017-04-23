@@ -1,40 +1,44 @@
-const path = require('path');
-const webpack = require('webpack');
+const path = require('path')
+const webpack = require('webpack')
+const imageLoaders = require('./webpack.image.loaders.js')
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
+const faviconConfig = require('./favicon.config.js')
 
 module.exports = {
   devtool: '#source-map',
   entry: [
     'webpack-hot-middleware/client',
-    './app/index.js',
+    './src/index.js',
   ],
   output: {
     path: path.join(__dirname, 'dist'),
     filename: 'app.js',
-    publicPath: '/',
+    publicPath: '/'
   },
   plugins: [
+    new FaviconsWebpackPlugin(faviconConfig),
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoEmitOnErrorsPlugin(),
+    new webpack.NoEmitOnErrorsPlugin()
   ],
   module: {
-    loaders: [{
+    rules: [{
       test: /\.js?$/,
       loader: 'babel-loader',
-      include: path.join(__dirname, 'app'),
+      exclude: /node_modules/,
       query: {
         plugins: [
           ['react-transform', {
             transforms: [{
               transform: 'react-transform-hmr',
-              // If you use React Native, pass 'react-native' instead:
               imports: ['react'],
-              // This is important for Webpack HMR:
               locals: ['module'],
             }],
           }],
         ],
       },
-    }],
+    },
+    ...imageLoaders
+    ],
   },
-};
+}

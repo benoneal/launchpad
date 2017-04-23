@@ -1,25 +1,29 @@
-const path = require('path');
-const webpack = require('webpack');
-const del = require('del');
+const path = require('path')
+const webpack = require('webpack')
+const imageLoaders = require('./webpack.image.loaders.js')
+const del = require('del')
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
+const faviconConfig = require('./favicon.config.js')
 
 class CleanPlugin {
   constructor(options) {
-    this.options = options;
+    this.options = options
   }
 
   apply() {
-    del.sync(this.options.files);
+    del.sync(this.options.files)
   }
 }
 
 module.exports = {
-  entry: './app/index',
+  entry: './src/index.js',
   output: {
     path: path.join(__dirname, 'dist'),
     filename: 'app.min.js',
     publicPath: '/',
   },
   plugins: [
+    new FaviconsWebpackPlugin(faviconConfig),
     new webpack.optimize.OccurrenceOrderPlugin(),
     new CleanPlugin({
       files: ['dist/*'],
@@ -37,10 +41,12 @@ module.exports = {
     }),
   ],
   module: {
-    loaders: [{
+    rules: [{
       test: /\.js?$/,
       loader: 'babel-loader',
-      include: path.join(__dirname, 'app'),
-    }],
+      exclude: /node_modules/,
+    },
+    ...imageLoaders
+    ],
   },
-};
+}

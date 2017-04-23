@@ -1,0 +1,15 @@
+run.config:
+  engine: nodejs
+  engine.config:
+    runtime: nodejs-7.0
+  extra_packages:
+    - nginx
+
+deploy.config:
+  extra_steps:
+    - npm run build
+
+web.main:
+  start:
+    nginx: nginx -c /app/nginx.conf
+    app: npm run start-prod
