@@ -1,6 +1,5 @@
 /* eslint-disable global-require */
 import { createStore, applyMiddleware } from 'redux'
-import compact from 'lodash/compact'
 import thunk from 'redux-thunk'
 import logger from 'redux-logger'
 import router from './router'
@@ -9,14 +8,14 @@ import reducer from './store'
 const clientDev = typeof document !== 'undefined' && process.env.NODE_ENV !== 'production'
 
 export default (history, initialState) => {
-  const middleware = compact([thunk, router(history), clientDev && logger])
+  const middleware = [thunk, router(history), clientDev && logger].filter(x => x)
   const createStoreWithMiddleware = applyMiddleware(...middleware)(createStore)
 
-  const store = createStoreWithMiddleware(...compact([
+  const store = createStoreWithMiddleware(...[
     reducer, 
     initialState, 
     clientDev && window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-  ]))
+  ].filter(x => x))
 
   if (clientDev && module.hot) {
     module.hot.accept('./store', () => {

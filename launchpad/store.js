@@ -1,14 +1,13 @@
 import curry from 'lodash/curry'
-import reduce from 'lodash/reduce'
 import isObject from 'lodash/isObject'
-import isArray from 'lodash/isArray'
-import merge from 'lodash/merge'
+import merge from 'deepmerge'
 
+const {isArray} = Array
 const {keys} = Object
 
 const chain = (...reducers) => (
   (state, action) => (
-    reduce(reducers, (acc, reducer) => reducer(acc, action), state)
+    reducers.reduce((acc, reducer) => reducer(acc, action), state)
   )
 )
 
@@ -79,13 +78,13 @@ const createAsyncAction = (
     const state = getState()
     if (state.pending[type] || !condition(...payload, state, dispatch)) return
       
-    sideEffect(...payload, state)
     dispatch({type})
 
     return async(...payload, state, dispatch).then(
       (...payload) => dispatch({type: type + SUCCESS, payload: trimPayload(payload)}),
       (error) => dispatch({type: type + FAILURE, error})
     ).then(() => {
+      sideEffect(...payload, state)
       paired && dispatch(paired(...payload))
     })
   }
@@ -113,7 +112,15 @@ export const createAction = (
 
   addHandler(type, handler)
   
-  return (...payload) => (dispatch, getState) => {
+  return (e, ...args) => (dispatch, getState) => {
+    let payload
+
+    if (e && e.hasOwnProperty('nativeEvent')) {
+      payload = args
+    } else {
+      payload = [e, ...args]
+    }
+
     if (!condition(...payload, getState(), dispatch)) return
     sideEffect(...payload, getState())
     paired && dispatch(paired(...payload))

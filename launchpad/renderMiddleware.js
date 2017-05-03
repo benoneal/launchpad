@@ -1,5 +1,5 @@
 import React from 'react'
-import {renderToStaticMarkup} from 'react-dom/server'
+import {renderToString, renderToStaticMarkup} from 'react-dom/server'
 import Helmet from 'react-helmet'
 import {Provider} from 'react-redux'
 import createHistory from 'history/createMemoryHistory'
@@ -11,7 +11,7 @@ import {getCache, fetchData, cacheData} from './cache'
 const renderCache = {}
 
 const renderHtml = ({AppComponent, store, bundle, baseCss, cssToString}) => {
-  const body = renderToStaticMarkup(
+  const body = renderToString(
     <Provider store={store}>
       <AppComponent />
     </Provider>

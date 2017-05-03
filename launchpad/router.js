@@ -1,11 +1,11 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import routePattern from 'route-parser'
-import reduce from 'lodash/reduce'
 import isString from 'lodash/isString'
 import qs from 'qs'
 import {createAction} from './store'
 
+const {keys} = Object
 const navigation = {}
 const redirect = {}
 const routes = {}
@@ -28,7 +28,8 @@ const registerRoute = (route, action) => {
 }
 
 const findMatches = (path) => (
-  reduce(routes, (acc, {pattern, action}) => {
+  keys(routes).reduce((acc, key) => {
+    const {pattern, action} = routes[key]
     const params = pattern.match(path)
     return params ? [...acc, {params, action}] : acc
   }, [])
@@ -47,7 +48,7 @@ export const resolveLocation = (path, dispatch) => new Promise((resolve) => {
   if (!matches.length) return resolve({status: 404})
 
   Promise.all(matches
-    .map(({params, action}) => dispatch(action(params)))
+    .map(({params, action}) => typeof action === 'function' && dispatch(action(params)))
     .filter((action) => action instanceof Promise)
   ).then(
     () => resolve({status: 200}),
@@ -55,8 +56,14 @@ export const resolveLocation = (path, dispatch) => new Promise((resolve) => {
   )
 })
 
+const buildLocationState = (location) => ({
+  ...location,
+  params: findMatches(location.pathname).reduce((acc, {params}) => ({...acc, ...params}), {}),
+  query: qs.parse(location.search.split('?')[1] || '')
+})
+
 export default (history) => {
-  navigation.goTo = createAction('GO_TO_LOCATION', {
+  navigation.push = createAction('GO_TO_LOCATION', {
     sideEffect: (path, state) => history.push(path)
   })
 
@@ -67,12 +74,9 @@ export default (history) => {
   navigation.setLocation = createAction('SET_LOCATION', {
     handler: (state, {payload: location}) => ({
       ...state,
-      location: {
-        ...location,
-        query: qs.parse(location.search.split('?')[1] || '')
-      }
+      location: buildLocationState(location)
     }),
-    initialState: {location: history.location}
+    initialState: {location: buildLocationState(history.location)}
   })
 
   navigation.prefetch = createAction('LOCATION_PREFETCH', {
@@ -115,7 +119,7 @@ const mapStateToLink = ({
 })
 
 const mapDispatchToLink = (dispatch) => ({
-  goTo: (path) => dispatch(navigation.goTo(path)),
+  push: (path) => dispatch(navigation.push(path)),
   replace: (path) => dispatch(navigation.replace(path)), 
   prefetch: (path) => dispatch(navigation.prefetch(path))
 })
@@ -135,7 +139,7 @@ class LinkClass extends Component {
   render () {
     const {
       to,
-      goTo,
+      push,
       replace,
       prefetch,
       prefetchData,
@@ -144,7 +148,7 @@ class LinkClass extends Component {
       replaceLocation,
       className,
       currentPath,
-      activeClassname,
+      activeClassName,
       onClick,
       children,
       target,
@@ -153,13 +157,13 @@ class LinkClass extends Component {
 
     return (
       <a {...rest}
-        className={`${className} ${to === currentPath ? activeClassname : ''}`}
+        className={`${className} ${to === currentPath ? activeClassName : ''}`}
         href={to} 
         onClick={(e) => {
           onClick(e)
           if (shouldIgnoreClick(e, target)) return
           e.preventDefault()
-          const navigate = replaceLocation ? replace : goTo
+          const navigate = replaceLocation ? replace : push
           navigate(`${to}${persistQuery ? query : ''}`)
         }}
       >
@@ -171,7 +175,7 @@ class LinkClass extends Component {
 LinkClass.defaultProps = {
   persistQuery: true,
   replaceLocation: false,
-  activeClassname: '',
+  activeClassName: '',
   onClick: () => {}
 }
 
@@ -188,20 +192,22 @@ export const Fragment = connect(mapStateToFragment)(({
   location,
   currentPath,
   forRoute,
-  withCondition = ({status}) => !status || status === 200, 
+  withCondition = ({status}) => !status || status === 200,
+  element, 
   children
 }) => {
   isString(forRoute) && registerRoute(forRoute)
-  const renderChildren = withCondition(location) && 
-    (forRoute === location.status || matchRoute(forRoute, currentPath))
-  return <div>{renderChildren && children}</div>
+  const renderChildren = Boolean(withCondition(location) && 
+      (forRoute === location.status || matchRoute(forRoute, currentPath)))
+  const El = element || 'div'
+  return renderChildren && <El key={forRoute}>{children}</El>
 })
 
-export const routeFragment = (route, action, condition) => {
+export const routeFragment = (route, action, condition, element) => {
   isString(route) && registerRoute(route, action)
 
   return ({children}) => (
-    <Fragment forRoute={route} withCondition={condition}>
+    <Fragment forRoute={route} withCondition={condition} element={element}>
       {children}
     </Fragment>
   )

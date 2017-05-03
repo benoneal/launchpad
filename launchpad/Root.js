@@ -41,8 +41,8 @@ const Root = ({
       <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png" />
       <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
       <link rel="shortcut icon" href="/favicon.ico" />
-      {baseStyles && <styles>{baseStyles}</styles>}
-      {renderJSStyles && <styles>{renderJSStyles()}</styles>}
+      {baseStyles && <style dangerouslySetInnerHTML={{__html: baseStyles}} />}
+      {renderJSStyles && <style id="stylesheet" dangerouslySetInnerHTML={{__html: renderJSStyles()}} />}
     </head>
     <body {...head.bodyAttributes.toComponent()}>
       <div id="root" dangerouslySetInnerHTML={{ __html: content }} />
