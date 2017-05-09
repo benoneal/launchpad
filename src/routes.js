@@ -1,4 +1,4 @@
-import {routeFragment, routeRedirect} from '../launchpad'
+import {routeFragment, routeRedirect} from 'fenris'
 import {
   getUser,
   getUsers,

@@ -1,4 +1,4 @@
-import launchClient from '../launchpad'
+import launchClient from 'fenris'
 import App from './App'
 
 launchClient(App)

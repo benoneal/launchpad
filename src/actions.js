@@ -1,4 +1,4 @@
-import {createAction} from '../launchpad'
+import {createAction} from 'fenris'
 import {fetchUsers, fetchUser, fetchKey} from './api'
 
 export const getKey = createAction('GET_TEST_KEY', {

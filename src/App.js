@@ -1,6 +1,6 @@
 import React from 'react'
 import Helmet from 'react-helmet'
-import {Link} from '../launchpad'
+import {Link} from 'fenris'
 import Home from './pages/Home'
 import User from './pages/User'
 import Key from './pages/Key'

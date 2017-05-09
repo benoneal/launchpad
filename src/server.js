@@ -1,4 +1,4 @@
-import launchServer, {getEndpoint} from '../launchpad/server'
+import launchServer, {getEndpoint} from 'fenris/dist/server'
 import AppComponent from './App'
 
 getEndpoint('/api/key/:key', ({key}) => (

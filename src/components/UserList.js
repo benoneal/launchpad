@@ -1,5 +1,5 @@
 import React from 'react'
-import {Link} from '../../launchpad'
+import {Link} from 'fenris'
 
 const UserList = ({ users }) => (
   <ul>

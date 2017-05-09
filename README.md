@@ -49,7 +49,7 @@ The custom redux store (which the router integrates with) exposes a simple `crea
 
 ``` javascript
 // actions.js
-import {createAction} from '../launchpad'
+import {createAction} from 'fenris'
 import {fetchUsers, fetchUser} from './api'
 
 export const getUsers = createAction('GET_USERS', {
@@ -61,7 +61,7 @@ export const getUsers = createAction('GET_USERS', {
   })
 })
 
-export const getUser = createAction('GET_USER', { // all constants are made available via import {constants} from '../launchpad'
+export const getUser = createAction('GET_USER', { // all constants are made available via import {constants} from 'fenris'
   async: ({id}) => fetchUser(id), // omit the async key for a synchronous action that passes its payload directly to the handler
   handler: (state, {payload: user}) => ({
     ...state, 
@@ -77,7 +77,7 @@ The custom router is both powerful and incredibly simple. It handles status code
 Setting up your app routes is trivial: 
 ``` javascript
 // routes.js
-import {routeFragment, routeRedirect} from '../launchpad'
+import {routeFragment, routeRedirect} from 'fenris'
 import {getUsers, getUser} from './actions'
 
 // redirect from /user or /user/ to the app root (trailing slashes are normalised)

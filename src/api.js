@@ -1,4 +1,4 @@
-import {cachedGet, get} from '../launchpad'
+import {cachedGet, get} from 'fenris'
 import config from '../config'
 
 const BASE_URL = config.app_url
