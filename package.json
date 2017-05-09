@@ -1,7 +1,7 @@
 {
   "name": "launchpad",
   "title": "Launchpad",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Universal react/redux starter kit",
   "main": "index.js",
   "private": false,
