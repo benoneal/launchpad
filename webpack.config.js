@@ -1,11 +1,10 @@
 const path = require('path')
 const webpack = require('webpack')
-const MinifierPlugin = require('babili-webpack-plugin')
+// const MinifierPlugin = require('babili-webpack-plugin')
 const nodeExternals = require('webpack-node-externals')
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
 const faviconConfig = require('./favicon.config.js')
 const babelConfig = require('./babelrc.js')
-const appConfig = require('./config')
 
 const DIST = path.join(__dirname, 'dist')
 const PRODUCTION = process.env.NODE_ENV === 'production'
@@ -16,7 +15,6 @@ const plugins = filterFalsy([
   !PRODUCTION && new webpack.HotModuleReplacementPlugin(),
   !PRODUCTION && new webpack.NamedModulesPlugin(),
   !PRODUCTION && new webpack.NoEmitOnErrorsPlugin(),
-  PRODUCTION && new MinifierPlugin(),
   new webpack.DefinePlugin({
     'process.env': {
       NODE_ENV: JSON.stringify(process.env.NODE_ENV),
@@ -58,6 +56,7 @@ const clientConfig = {
   output: {
     path: DIST,
     filename: PRODUCTION ? 'app.min.js' : 'app.js',
+    sourceMapFilename: 'app.js.map',
     publicPath: '/'
   },
   plugins: plugins.concat(new FaviconsWebpackPlugin(faviconConfig)),
